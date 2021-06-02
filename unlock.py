@@ -6,15 +6,14 @@
 # <SheetProtection> / <workbookProtection> tags, the workbook will become completely unlocked.
 
 import os
-import re
-from shutil import copyfile, rmtree, make_archive
 import zipfile
-import codecs
-import tkinter
-from tkinter import filedialog
+from codecs import open
+from re import search
+from shutil import copyfile, rmtree, make_archive
+from tkinter import filedialog, Tk
 
 # Initialize and close Tkinter root window
-root = tkinter.Tk()
+root = Tk()
 root.withdraw()
 
 # Open tkinter and choose file from from current directory.
@@ -42,10 +41,10 @@ def unlock():
     for file in os.listdir(file_path + '/tempfolder/xl/'):
         if file == 'workbook.xml':
             # Open and read the workbook.xml file. Encoding set to 'utf-8' to avoid problems with other languages.
-            with codecs.open(file_path + '/tempfolder/xl/' + file, 'r', 'utf-8') as wb:
+            with open(file_path + '/tempfolder/xl/' + file, 'r', 'utf-8') as wb:
                 Read_Workbook = wb.read()
                 # Look for a the tag containing workbookProtection
-                rm_wbprot_string = re.search('(?=<workbookProtection).*?(/>)', Read_Workbook)
+                rm_wbprot_string = search('(?=<workbookProtection).*?(/>)', Read_Workbook)
                 wb.close()
                 # Check if the workbookProtection tag is found(i.e. the workbook is locked)
                 if rm_wbprot_string:
@@ -54,7 +53,7 @@ def unlock():
                     wb_prot_removed = Read_Workbook.replace(Remove_String, "")
 
                     # Overwrite the locked workbook.xml with an unlocked version.
-                    new_wb = codecs.open(wb.name, 'w+', 'utf-8')
+                    new_wb = open(wb.name, 'w+', 'utf-8')
                     new_wb.write(wb_prot_removed)
                     new_wb.close()
 
@@ -62,10 +61,10 @@ def unlock():
     for file in os.listdir(file_path + '/tempfolder/xl/worksheets/'):
         if file.lower().endswith('.xml'):
             # Open and read each sheet file. Encoding set to 'utf-8' to avoid problems with other languages.
-            with codecs.open(file_path + '/tempfolder/xl/worksheets/' + file, 'r', 'utf-8') as sh:
+            with open(file_path + '/tempfolder/xl/worksheets/' + file, 'r', 'utf-8') as sh:
                 Read_Sheet = sh.read()
                 # Look for the a tag containing sheetProtection
-                rm_sheetprot_string = re.search('(?=<sheetProtection).*?(/>)', Read_Sheet)
+                rm_sheetprot_string = search('(?=<sheetProtection).*?(/>)', Read_Sheet)
                 sh.close()
                 # Check if the sheetProtection tag is found(i.e. the worksheet is locked)
                 if rm_sheetprot_string:
@@ -74,7 +73,7 @@ def unlock():
                     sheet_prot_removed = Read_Sheet.replace(Remove_String, "")
 
                     # Overwrite the locked sheet#.xml with an unlocked version.
-                    new_sheet = codecs.open(sh.name, 'w+', 'utf-8')
+                    new_sheet = open(sh.name, 'w+', 'utf-8')
                     new_sheet.write(sheet_prot_removed)
                     new_sheet.close()
 
