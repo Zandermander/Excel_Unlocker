@@ -6,6 +6,7 @@
 # <SheetProtection> / <workbookProtection> tags, the workbook will become completely unlocked.
 
 import os
+import sys
 import zipfile
 from codecs import open
 from re import search
@@ -16,8 +17,11 @@ from tkinter import filedialog, Tk
 root = Tk()
 root.withdraw()
 
-# Open tkinter and choose file from from current directory.
+# Open Tkinter and choose file from from current directory.
 open_file = filedialog.askopenfilename(initialdir=os.getcwd())
+
+if not open_file:
+    exit()
 
 # set file variables
 file_path = os.path.dirname(open_file)
@@ -91,4 +95,7 @@ def unlock():
 
 
 if __name__ == "__main__":
-    unlock()
+    try:
+        unlock()
+    except:
+        print("Exit")
