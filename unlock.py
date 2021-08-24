@@ -6,7 +6,6 @@
 # <SheetProtection> / <workbookProtection> tags, the workbook will become completely unlocked.
 
 import os
-import sys
 import zipfile
 from codecs import open
 from re import search
